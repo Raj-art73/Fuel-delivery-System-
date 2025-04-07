@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Fuel - FuelExpress</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .order-container {
+            min-height: 100vh;
+            padding: 100px 5% 50px;
+            background-color: var(--light-color);
+        }
+
+        .order-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .order-form h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .fuel-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .fuel-option {
+            border: 2px solid #ddd;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .fuel-option.selected {
+            border-color: var(--primary-color);
+            background-color: #fff5f5;
+        }
+
+        .fuel-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .order-summary {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .total-amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #ddd;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .place-order-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .price-info {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>FuelExpress</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="account.html">My Account</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="#" class="btn-login" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="order-container">
+        <form class="order-form" id="orderForm">
+            <h2>Place Your Order</h2>
+            
+            <div class="fuel-type-selector">
+                <div class="fuel-option" data-type="petrol">
+                    <i class="fas fa-gas-pump"></i>
+                    <h3>Petrol</h3>
+                    <p class="price-info">Current Price: RS- 160.50/L</p>
+                </div>
+                <div class="fuel-option" data-type="diesel">
+                    <i class="fas fa-truck"></i>
+                    <h3>Diesel</h3>
+                    <p class="price-info">Current Price: RS- 150. 50/L</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Quantity (Liters)</label>
+                <input type="number" id="quantity" name="quantity" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="deliveryDate">Preferred Delivery Date</label>
+                <input type="date" id="deliveryDate" name="deliveryDate" required>
+            </div>
+
+            <div class="form-group">
+                <label for="deliveryTime">Preferred Delivery Time</label>
+                <select id="deliveryTime" name="deliveryTime" required>
+                    <option value="">Select time</option>
+                    <option value="09:00">9:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="13:00">1:00 PM</option>
+                </select>
+            </div>
+
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-item">
+                    <span>Selected Fuel:</span>
+                    <span id="selectedFuel">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Quantity:</span>
+                    <span id="summaryQuantity">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Delivery Date:</span>
+                    <span id="summaryDate">-</span>
+                </div>
+                <div class="summary-item">
+                    <span>Delivery Time:</span>
+                    <span id="summaryTime">-</span>
+                </div>
+                <div class="summary-item total-amount">
+                    <span>Total Amount:</span>
+                    <span id="totalAmount">RS 0.00</span>
+                </div>
+            </div>
+
+            <button type="submit" class="place-order-btn">Place Order</button>
+        </form>
+    </div>
+
+    <script>
+        // Fuel type selection
+        const fuelOptions = document.querySelectorAll('.fuel-option');
+        let selectedFuel = null;
+        let currentPrice = 0;
+
+        fuelOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                fuelOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedFuel = option.dataset.type;
+                currentPrice = selectedFuel === 'petrol' ? 160.50 : 150.50;
+                updateSummary();
+            });
+        });
+
+        // Update summary
+        function updateSummary() {
+            const quantity = document.getElementById('quantity').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+            const deliveryTime = document.getElementById('deliveryTime').value;
+
+            document.getElementById('selectedFuel').textContent = selectedFuel ? selectedFuel.charAt(0).toUpperCase() + selectedFuel.slice(1) : '-';
+            document.getElementById('summaryQuantity').textContent = quantity ? `${quantity}L` : '-';
+            document.getElementById('summaryDate').textContent = deliveryDate || '-';
+            document.getElementById('summaryTime').textContent = deliveryTime || '-';
+
+            if (quantity && selectedFuel) {
+                const total = (quantity * currentPrice).toFixed(2);
+                document.getElementById('totalAmount').textContent = `$${total}`;
+            } else {
+                document.getElementById('totalAmount').textContent = '$0.00';
+            }
+        }
+
+        // Add event listeners for form inputs
+        document.getElementById('quantity').addEventListener('input', updateSummary);
+        document.getElementById('deliveryDate').addEventListener('change', updateSummary);
+        document.getElementById('deliveryTime').addEventListener('change', updateSummary);
+
+        // Form submission
+        document.getElementById('orderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!selectedFuel) {
+                alert('Please select a fuel type');
+                return;
+            }
+
+            const quantity = document.getElementById('quantity').value;
+            const deliveryDate = document.getElementById('deliveryDate').value;
+            const deliveryTime = document.getElementById('deliveryTime').value;
+            const total = (quantity * currentPrice).toFixed(2);
+
+            // Create order object
+            const order = {
+                id: 'ORD' + Date.now(),
+                date: new Date().toLocaleDateString(),
+                status: 'Pending',
+                fuelType: selectedFuel,
+                quantity: quantity + 'L',
+                deliveryDate: new Date(deliveryDate).toLocaleDateString(),
+                deliveryTime: deliveryTime,
+                totalAmount: 'RS ' + total
+            };
+
+            // Get existing orders from localStorage
+            let orders = JSON.parse(localStorage.getItem('fuelOrders') || '[]');
+            
+            // Add new order to the beginning of the array
+            orders.unshift(order);
+            
+            // Save updated orders back to localStorage
+            localStorage.setItem('fuelOrders', JSON.stringify(orders));
+
+            alert('Order placed successfully!');
+            window.location.href = 'orders.html';
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Here you would typically clear the user's session
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html> 

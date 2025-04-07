@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - FuelExpress</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .account-container {
+            min-height: 100vh;
+            padding: 100px 5% 50px;
+            background-color: var(--light-color);
+        }
+
+        .account-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+
+        .account-sidebar {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .account-sidebar h3 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            color: var(--dark-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: #fff5f5;
+            color: var(--primary-color);
+        }
+
+        .sidebar-menu i {
+            margin-right: 1rem;
+            width: 20px;
+        }
+
+        .account-main {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            color: var(--primary-color);
+        }
+
+        .edit-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .profile-image-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-overlay i {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .profile-image:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        #defaultIcon {
+            font-size: 3rem;
+            color: #ddd;
+        }
+
+        .image-upload-label {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .detail-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        .address-section {
+            margin-bottom: 3rem;
+        }
+
+        .address-card {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .address-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .address-type {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .address-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-address-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .delete-address-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .edit-address-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .delete-address-btn:hover {
+            background-color: #c82333;
+        }
+
+        .add-address-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-address-btn:hover {
+            background-color: #28a745;
+        }
+
+        .add-address-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .payment-section {
+            margin-bottom: 3rem;
+        }
+
+        .payment-card {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .payment-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .card-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-number {
+            font-weight: 500;
+        }
+
+        .card-expiry {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .delete-card-btn {
+            padding: 0.5rem 1rem;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-card-btn:hover {
+            background-color: #c82333;
+        }
+
+        .add-payment-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-payment-btn:hover {
+            background-color: #28a745;
+        }
+
+        .add-payment-btn i {
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <h1>FuelExpress</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="account.html">My Account</a></li>
+            <li><a href="orders.html">My Orders</a></li>
+            <li><a href="#" class="btn-login" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="account-container">
+        <div class="account-content">
+            <div class="account-sidebar">
+                <h3>Account Menu</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+                    <li><a href="#"><i class="fas fa-credit-card"></i> Payment Methods</a></li>
+                    <li><a href="/orders.html "><i class="fas fa-history"></i> Order History</a></li>
+                    <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
+                    <li><a href="#"><i class="fas fa-shield-alt"></i> Security</a></li>
+                </ul>
+            </div>
+
+            <div class="account-main">
+                <div class="section-header">
+                    <h2>Profile Information</h2>
+                    <button class="edit-btn">Edit Profile</button>
+                </div>
+
+                <div class="profile-section">
+                    <div class="profile-image" id="profileImageContainer">
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <label for="imageUpload" class="image-upload-label">
+                            <div class="profile-image-wrapper">
+                                <img id="profileImage" src="" alt="" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                <i class="fas fa-user" id="defaultIcon"></i>
+                                <div class="upload-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="profile-details">
+                        <div class="detail-group">
+                            <span class="detail-label">Full Name</span>
+                            <span class="detail-value" id="userFullName">-</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="userEmail">-</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="detail-label">Phone</span>
+                            <span class="detail-value" id="userPhone">-</span>
+                        </div>
+                        <div class="detail-group">
+                            <span class="detail-label">Member Since</span>
+                            <span class="detail-value" id="memberSince">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2> Address</h2>
+                    <button class="add-address-btn"><i class="fas fa-plus"></i> Add New Address</button>
+                </div>
+
+                <div class="address-section">
+                    <div class="address-card">
+                        <div class="address-header">
+                            <span class="address-type">Home</span>
+                            <div class="address-actions">
+                                <button class="action-btn edit-address-btn">Edit</button>
+                                <button class="action-btn delete-address-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="detail-value">123 Main Street</div>
+                        
+                        <div class="detail-value">Nepal</div>
+                    </div>
+
+                    <div class="address-card">
+                        <div class="address-header">
+                            <span class="address-type">Office</span>
+                            <div class="address-actions">
+                                <button class="action-btn edit-address-btn">Edit</button>
+                                <button class="action-btn delete-address-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="detail-value">Inaruwa</div>
+                       
+                        <div class="detail-value">Nepal</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2>Payment Methods</h2>
+                    <button class="add-payment-btn"><i class="fas fa-plus"></i> Add payment Card</button>
+                </div>
+
+                <div class="payment-section">
+                    <div class="payment-card">
+                        <div class="payment-info">
+                            <div class="card-icon">
+                                <i class="fab fa-cc-visa"></i>
+                            </div>
+                            <div class="card-details">
+                                <div class="card-number">**** **** **** 1234</div>
+                                <div class="card-expiry">Expires 12/25</div>
+                            </div>
+                        </div>
+                        <button class="delete-card-btn">Delete</button>
+                    </div>
+
+                    <div class="payment-card">
+                        <div class="payment-info">
+                            <div class="card-icon">
+                                <i class="fab fa-cc-mastercard"></i>
+                            </div>
+                            <div class="card-details">
+                                <div class="card-number">**** **** **** 5678</div>
+                                <div class="card-expiry">Expires 08/26</div>
+                            </div>
+                        </div>
+                        <button class="delete-card-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load saved addresses from localStorage
+        function loadAddresses() {
+            const addresses = JSON.parse(localStorage.getItem('userAddresses') || '[]');
+            const addressSection = document.querySelector('.address-section');
+            
+            if (addresses.length === 0) {
+                // Add default addresses if none exist
+                const defaultAddresses = [
+                    {
+                        id: 'addr1',
+                        type: 'Home',
+                        street: ' Street',
+                        country: 'Nepal'
+                    },
+                    {
+                        id: 'addr2',
+                        type: 'Office',
+                        street: 'Inaruwa',
+                        country: 'Nepal'
+                    }
+                ];
+                localStorage.setItem('userAddresses', JSON.stringify(defaultAddresses));
+                return loadAddresses();
+            }
+
+            addressSection.innerHTML = addresses.map(address => `
+                <div class="address-card" data-address-id="${address.id}">
+                    <div class="address-header">
+                        <span class="address-type">${address.type}</span>
+                        <div class="address-actions">
+                            <button class="action-btn edit-address-btn">Edit</button>
+                            <button class="action-btn delete-address-btn">Delete</button>
+                        </div>
+                    </div>
+                    <div class="detail-value">${address.street}</div>
+                    <div class="detail-value">${address.country}</div>
+                </div>
+            `).join('');
+
+            // Add event listeners to the buttons
+            addAddressEventListeners();
+        }
+
+        // Add new address
+        document.querySelector('.add-address-btn').addEventListener('click', function() {
+            showAddressForm();
+        });
+
+        function showAddressForm(address = null) {
+            const isEdit = !!address;
+            const formHTML = `
+                <div class="address-form" style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; z-index: 1000;">
+                    <h3>${isEdit ? 'Edit Address' : 'Add New Address'}</h3>
+                    <form id="addressForm">
+                        <div class="form-group">
+                            <label for="addressType">Address Type</label>
+                            <select id="addressType" required>
+                                <option value="Home" ${address?.type === 'Home' ? 'selected' : ''}>Home</option>
+                                <option value="Office" ${address?.type === 'Office' ? 'selected' : ''}>Office</option>
+                                <option value="Other" ${address?.type === 'Other' ? 'selected' : ''}>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="street">Street Address</label>
+                            <input type="text" id="street" required value="${address?.street || ''}">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Country</label>
+                            <input type="text" id="country" required value="${address?.country || ''}">
+                        </div>
+                        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                            <button type="submit" class="edit-btn" style="flex: 1;">${isEdit ? 'Save Changes' : 'Add Address'}</button>
+                            <button type="button" class="delete-address-btn" style="flex: 1;" onclick="closeAddressForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="overlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999;"></div>
+            `;
+
+            const formContainer = document.createElement('div');
+            formContainer.innerHTML = formHTML;
+            document.body.appendChild(formContainer);
+
+            document.getElementById('addressForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const addressData = {
+                    id: address ? address.id : 'addr_' + Date.now(),
+                    type: document.getElementById('addressType').value,
+                    street: document.getElementById('street').value,
+                    country: document.getElementById('country').value
+                };
+
+                let addresses = JSON.parse(localStorage.getItem('userAddresses') || '[]');
+                
+                if (isEdit) {
+                    addresses = addresses.map(addr => addr.id === address.id ? addressData : addr);
+                } else {
+                    addresses.push(addressData);
+                }
+
+                localStorage.setItem('userAddresses', JSON.stringify(addresses));
+                loadAddresses();
+                closeAddressForm();
+                alert(isEdit ? 'Address updated successfully!' : 'Address added successfully!');
+            });
+        }
+
+        function closeAddressForm() {
+            const form = document.querySelector('.address-form');
+            const overlay = document.querySelector('.overlay');
+            if (form && overlay) {
+                form.parentElement.remove();
+            }
+        }
+
+        function addAddressEventListeners() {
+            // Edit address functionality
+            document.querySelectorAll('.edit-address-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const addressCard = this.closest('.address-card');
+                    const addressId = addressCard.dataset.addressId;
+                    const addresses = JSON.parse(localStorage.getItem('userAddresses') || '[]');
+                    const address = addresses.find(addr => addr.id === addressId);
+                    if (address) {
+                        showAddressForm(address);
+                    }
+                });
+            });
+
+            // Delete address functionality
+            document.querySelectorAll('.delete-address-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const addressCard = this.closest('.address-card');
+                    if (!addressCard) return;
+                    
+                    const addressId = addressCard.dataset.addressId;
+                    if (confirm('Are you sure you want to delete this address?')) {
+                        let addresses = JSON.parse(localStorage.getItem('userAddresses') || '[]');
+                        addresses = addresses.filter(addr => addr.id !== addressId);
+                        localStorage.setItem('userAddresses', JSON.stringify(addresses));
+                        loadAddresses();
+                    }
+                });
+            });
+        }
+
+        // Load addresses when the page loads
+        window.addEventListener('load', loadAddresses);
+
+        // Profile image functionality
+        function initializeProfileImage() {
+            const savedImage = localStorage.getItem('userProfileImage');
+            const profileImage = document.getElementById('profileImage');
+            const defaultIcon = document.getElementById('defaultIcon');
+
+            if (savedImage) {
+                profileImage.src = savedImage;
+                profileImage.style.display = 'block';
+                defaultIcon.style.display = 'none';
+            }
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('Image size should be less than 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const profileImage = document.getElementById('profileImage');
+                    const defaultIcon = document.getElementById('defaultIcon');
+                    
+                    profileImage.src = event.target.result;
+                    profileImage.style.display = 'block';
+                    defaultIcon.style.display = 'none';
+                    
+                    // Save image to localStorage
+                    localStorage.setItem('userProfileImage', event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Load user profile information
+        function loadUserProfile() {
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            
+            if (userProfile.firstName) {
+                document.getElementById('userFullName').textContent = 
+                    `${userProfile.firstName} ${userProfile.lastName || ''}`;
+                document.getElementById('userEmail').textContent = userProfile.email || '-';
+                document.getElementById('userPhone').textContent = userProfile.phone || '-';
+                document.getElementById('memberSince').textContent = userProfile.joinDate || '-';
+            }
+        }
+
+        // Add profile loading to window load
+        window.addEventListener('load', function() {
+            loadAddresses();
+            initializeProfileImage();
+            loadUserProfile();
+        });
+
+        // Update logout to clear all user data
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Clear all user data
+            localStorage.removeItem('userAddresses');
+            localStorage.removeItem('userProfileImage');
+            localStorage.removeItem('userProfile');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html> 
